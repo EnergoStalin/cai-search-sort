@@ -8,8 +8,8 @@ export function statusWrapper(card: HTMLElement, status: string) {
 	const height = card.querySelector("img")?.height
 	const d = document.createElement("div")
 	d.dataset.status = status
-	d.classList.add("flex", "items-center", "relative")
-	d.style = `min-height: ${height}px;`
+	d.classList.add("flex", "items-center", "relative", "flex-row")
+	d.style = `min-height: ${height}px; flex-direction: column;`
 
 	card.append(d)
 
@@ -21,7 +21,7 @@ export function isStarred(card: HTMLElement) {
 }
 export function setStarredStatus(card: HTMLElement, label: string) {
 	statusWrapper(card, "starred").innerHTML = `
-		<div class="flex w-full items-center">
+		<div class="flex w-full" style="justify-content: center;">
 			${starredIcon}
 		</div>
 		<span class="w-full">${label}</span>

@@ -20,12 +20,18 @@ const metadata = {
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
 	entry: ["src/index.ts"],
-	format: "iife",
-	target: "es6",
+	format: "esm",
+	target: "esnext",
 	bundle: true,
 	outDir: "build",
 	minify: dev,
 	clean: false,
+	banner: {
+		js: "(async () => {",
+	},
+	footer: {
+		js: "})()",
+	},
 	outExtension: () => {
 		return { js: ".user.js", dts: ".user.dts" }
 	},
