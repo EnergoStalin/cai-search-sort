@@ -3,7 +3,7 @@
 // @author        EnergoStalin
 // @description   Sort search so cards with public definition stays on top and marked with a star
 // @license       AGPL-3.0-only
-// @version       1.0.1
+// @version       1.0.2
 // @namespace     https://c.ai
 // @match         https://character.ai/search*
 // @run-at        document-body
