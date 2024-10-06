@@ -1,3 +1,4 @@
+import "./styles/tooltip.css"
 import { pendingIcon, starredIcon } from "./icons"
 
 export function clearStatus(card: HTMLElement) {
@@ -8,7 +9,7 @@ export function statusWrapper(card: HTMLElement, status: string) {
 	const height = card.querySelector("img")?.height
 	const d = document.createElement("div")
 	d.dataset.status = status
-	d.classList.add("flex", "items-center", "relative", "flex-row")
+	d.classList.add("flex", "items-center", "relative", "flex-row", "tooltip")
 	d.style = `min-height: ${height}px; flex-direction: column;`
 
 	card.append(d)
@@ -24,7 +25,7 @@ export function setStarredStatus(card: HTMLElement, label: string) {
 		<div class="flex w-full" style="justify-content: center;">
 			${starredIcon}
 		</div>
-		<span class="w-full">${label}</span>
+		<span class="w-full tooltiptext">${label}</span>
 	`
 }
 

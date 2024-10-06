@@ -15,6 +15,7 @@ const metadata = {
 	match: "https://character.ai/search*",
 	"run-at": "document-body",
 	icon: "https://www.google.com/s2/favicons?sz=64&domain=character.ai",
+	grant: ["GM.addStyle"],
 }
 
 // eslint-disable-next-line import/no-default-export
@@ -34,6 +35,11 @@ export default defineConfig({
 	},
 	outExtension: () => {
 		return { js: ".user.js", dts: ".user.dts" }
+	},
+	injectStyle(css) {
+		return `
+		GM.addStyle(\`\n${css.slice(1, -1)}\`)
+		`
 	},
 	esbuildPlugins: [
 		userscript({
