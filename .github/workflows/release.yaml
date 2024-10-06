@@ -9,9 +9,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8.15.1
+          version: 9.12.0
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -26,8 +26,10 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: userscript
-          path: build/index.user.js
+          name: release
+          path: |
+            build/index.user.js
+            README.md
           if-no-files-found: error
 
   release:
@@ -39,7 +41,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: userscript
+          name: release
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "index.user.js"
+          artifacts: "build/index.user.js,README.md"

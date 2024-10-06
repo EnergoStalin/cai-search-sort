@@ -6,7 +6,7 @@
   "module": "esm",
   "type": "module",
   "engines": {
-    "node": ">=21"
+    "node": ">=20"
   },
   "scripts": {
     "dev": "ENVIRONMENT=development tsup --watch",
