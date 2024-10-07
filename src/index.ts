@@ -1,16 +1,21 @@
 import { sort } from "./sorting/definition"
-import { waitNotNull } from "./util"
+import { injectNavigationHook, waitNotNull } from "./util"
 
-const cardsContainer = (await waitNotNull(() =>
-	document
-		.evaluate(
-			"/html/body/div[1]/div/main/div/div/div/main/div/div[2]",
-			document,
-		)
-		.iterateNext(),
-)) as HTMLElement
+injectNavigationHook(async () => {
+	console.log(unsafeWindow.location)
+	if (unsafeWindow.location.pathname !== "/search") return
 
-const sortSearches: MutationCallback = (_, observer) =>
-	sort(observer, cardsContainer)
+	const cardsContainer = (await waitNotNull(() =>
+		document
+			.evaluate(
+				"/html/body/div[1]/div/main/div/div/div/main/div/div[2]",
+				document,
+			)
+			.iterateNext(),
+	)) as HTMLElement
 
-sortSearches([], new MutationObserver(sortSearches))
+	const sortSearches: MutationCallback = (_, observer) =>
+		sort(observer, cardsContainer)
+
+	sortSearches([], new MutationObserver(sortSearches))
+})

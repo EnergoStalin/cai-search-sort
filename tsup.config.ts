@@ -12,7 +12,7 @@ const metadata = {
 	license: pkg.license,
 	version: process.env.VERSION || pkg.version,
 	namespace: "https://c.ai",
-	match: "https://character.ai/search*",
+	match: "https://character.ai/*",
 	"run-at": "document-body",
 	icon: "https://www.google.com/s2/favicons?sz=64&domain=character.ai",
 	grant: ["GM.addStyle"],

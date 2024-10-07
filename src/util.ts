@@ -21,3 +21,18 @@ export async function waitNotNull<T>(
 		}, interval)
 	})
 }
+
+export function injectNavigationHook(callback: (oldLocation: string) => void) {
+	let old = unsafeWindow.location.href
+	new MutationObserver(() => {
+		if (old === unsafeWindow.location.href) return
+		old = unsafeWindow.location.href
+
+		callback(old)
+	}).observe(unsafeWindow.document.body, {
+		subtree: true,
+		childList: true,
+	})
+
+	callback(old)
+}
