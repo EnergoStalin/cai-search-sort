@@ -3,7 +3,7 @@
 // @author        EnergoStalin
 // @description   Sort search so cards with public definition stays on top and marked with a star
 // @license       AGPL-3.0-only
-// @version       1.0.3
+// @version       1.0.4
 // @namespace     https://c.ai
 // @match         https://character.ai/search*
 // @run-at        document-body
@@ -60,18 +60,41 @@ GM.addStyle(`
   position: relative;
   cursor: pointer;
 }
-.tooltip .tooltiptext {
+.tooltip .tooltip-text {
   visibility: hidden;
   text-align: left;
   z-index: 1;
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 0.7em;
-  color: #626262;
+  color: #a6a6a6;
+  text-wrap: nowrap;
 }
-.tooltip:hover .tooltiptext {
+.tooltip .tooltip-head {
+  text-align: center;
+  font-size: 1.3em;
+  color: #a6a6a6;
+}
+.tooltip .tooltip-even {
+  flex-basis: 50%;
+}
+.tooltip .tooltip-number {
+  color: #b0a676;
+  text-align: right;
+}
+.tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+`);
+
+// src/styles/bootstrap.css
+GM.addStyle(`
+.align-items-start {
+  align-items: flex-start;
+}
+.text-center {
+  text-align: center;
 }
 `);
 
@@ -85,11 +108,10 @@ function clearStatus(card) {
 }
 __name(clearStatus, "clearStatus");
 function statusWrapper(card, status) {
-  const height = card.querySelector("img")?.height;
   const d = document.createElement("div");
   d.dataset.status = status;
-  d.classList.add("flex", "items-center", "relative", "flex-row", "tooltip");
-  d.style = `min-height: ${height}px; flex-direction: column;`;
+  d.classList.add("flex", "flex-col", "tooltip");
+  card.classList.add("align-items-start");
   card.append(d);
   return d;
 }
@@ -98,18 +120,32 @@ function isStarred(card) {
   return Boolean(card.querySelector('div[data-status="starred"]'));
 }
 __name(isStarred, "isStarred");
-function setStarredStatus(card, label) {
+function setStarredStatus(card, description, definition) {
   statusWrapper(card, "starred").innerHTML = `
-		<div class="flex w-full" style="justify-content: center;">
+		<div class="flex grow-0 shrink-0 justify-center">
 			${starredIcon}
 		</div>
-		<span class="w-full tooltiptext">${label}</span>
+		<div class="flex flex-col tooltip-text">
+			<span class="tooltip-head">Lengths</span>
+			<div class="flex flex-row gap-1">
+				<span class="tooltip-even">Description</span>
+				<span class="tooltip-even tooltip-number">${description.length}</span>
+			</div>
+			<div class="flex flex-row gap-1">
+				<span class="tooltip-even">Definition</span>
+				<span class="tooltip-even tooltip-number">${definition.length}</span>
+			</div>
+			<div class="flex flex-row gap-1">
+				<span class="tooltip-even">Total</span>
+				<span class="tooltip-even tooltip-number">${definition.length + description.length}</span>
+			</div>
+		</div>
 	`;
 }
 __name(setStarredStatus, "setStarredStatus");
 function setPendingStatus(card) {
   statusWrapper(card, "pending").innerHTML = `
-		<div class="flex w-full items-center">
+		<div class="flex flex-row grow-0 shrink-0 w-full items-center justify-center">
 			${pendingIcon}
 		</div>
 	`;
@@ -125,7 +161,7 @@ async function _sort(container) {
     const info = await getCharacterInfo(card.href.split("/").pop());
     clearStatus(card);
     if (info.definition) {
-      setStarredStatus(card, `${info.description.length}/${info.definition.length}`);
+      setStarredStatus(card, info.description, info.definition);
     } else {
       container.append(card);
     }
