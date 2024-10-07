@@ -3,7 +3,7 @@
 	cursor: pointer;
 }
 
-.tooltip .tooltiptext {
+.tooltip .tooltip-text {
 	visibility: hidden;
 	text-align: left;
 	z-index: 1;
@@ -11,10 +11,28 @@
 	transition: opacity 0.3s;
 
 	font-size: 0.7em;
-	color: #626262;
+	color: #a6a6a6;
+
+	text-wrap: nowrap;
 }
 
-.tooltip:hover .tooltiptext {
+.tooltip .tooltip-head {
+	text-align: center;
+	font-size: 1.3em;
+
+	color: #a6a6a6;
+}
+
+.tooltip .tooltip-even {
+	flex-basis: 50%;
+}
+
+.tooltip .tooltip-number {
+	color: #b0a676;
+	text-align: right;
+}
+
+.tooltip:hover .tooltip-text {
 	visibility: visible;
 	opacity: 1;
 }

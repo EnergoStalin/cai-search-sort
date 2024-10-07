@@ -19,10 +19,7 @@ async function _sort(container: HTMLElement) {
 		clearStatus(card)
 
 		if (info.definition) {
-			setStarredStatus(
-				card,
-				`${info.description.length}/${info.definition.length}`,
-			)
+			setStarredStatus(card, info.description, info.definition)
 		} else {
 			container.append(card)
 		}
