@@ -1,6 +1,6 @@
 {
   "name": "cai-search-sort",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Sort search so cards with public definition stays on top and marked with a star",
   "homepage": "https://c.ai",
   "module": "esm",

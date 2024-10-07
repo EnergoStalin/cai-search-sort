@@ -3,9 +3,9 @@
 // @author        EnergoStalin
 // @description   Sort search so cards with public definition stays on top and marked with a star
 // @license       AGPL-3.0-only
-// @version       1.0.4
+// @version       1.0.5
 // @namespace     https://c.ai
-// @match         https://character.ai/search*
+// @match         https://character.ai/*
 // @run-at        document-body
 // @icon          https://www.google.com/s2/favicons?sz=64&domain=character.ai
 // @grant         GM.addStyle
@@ -33,6 +33,19 @@ async function waitNotNull(func, timeout = 1e4, interval = 1e3) {
   });
 }
 __name(waitNotNull, "waitNotNull");
+function injectNavigationHook(callback) {
+  let old = unsafeWindow.location.href;
+  new MutationObserver(() => {
+    if (old === unsafeWindow.location.href) return;
+    old = unsafeWindow.location.href;
+    callback(old);
+  }).observe(unsafeWindow.document.body, {
+    subtree: true,
+    childList: true
+  });
+  callback(old);
+}
+__name(injectNavigationHook, "injectNavigationHook");
 
 // src/api.ts
 var pageProps = await waitNotNull(() => document.querySelector("#__NEXT_DATA__")?.textContent).then((e) => JSON.parse(e).props.pageProps);
@@ -190,7 +203,11 @@ async function sort(observer, container) {
 __name(sort, "sort");
 
 // src/index.ts
-var cardsContainer = await waitNotNull(() => document.evaluate("/html/body/div[1]/div/main/div/div/div/main/div/div[2]", document).iterateNext());
-var sortSearches = /* @__PURE__ */ __name((_, observer) => sort(observer, cardsContainer), "sortSearches");
-sortSearches([], new MutationObserver(sortSearches));
+injectNavigationHook(async () => {
+  console.log(unsafeWindow.location);
+  if (unsafeWindow.location.pathname !== "/search") return;
+  const cardsContainer = await waitNotNull(() => document.evaluate("/html/body/div[1]/div/main/div/div/div/main/div/div[2]", document).iterateNext());
+  const sortSearches = /* @__PURE__ */ __name((_, observer) => sort(observer, cardsContainer), "sortSearches");
+  sortSearches([], new MutationObserver(sortSearches));
+});
 })()
