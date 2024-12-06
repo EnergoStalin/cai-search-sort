@@ -18,13 +18,13 @@ async function _sort(container: HTMLElement) {
 		)
 		clearStatus(card)
 
-		if (info.copyable) {
-			setStarredStatus(card, info.description)
+		if (info.description?.length > 0) {
+			setStarredStatus(card, info.description.length)
 		} else {
 			container.append(card)
 		}
 
-		return [card, info.definition?.length, info.description?.length]
+		return [card, info.description?.length]
 	})
 
 	return Promise.all(promises)
@@ -34,18 +34,20 @@ function sortByDefinitionLength(
 	entries: (number | HTMLElement)[][],
 	container: HTMLElement,
 ) {
-	entries
-		.filter(([_c, dl, _dl]) => (dl ?? 0) !== 0)
-		.sort(([_c1, dl1, _dl1], [_c2, dl2, _dl2]) => (dl1! < dl2! ? 1 : -1))
-		.map(([c, _dfl, _dsl]) => c as HTMLElement)
-		.reverse()
-		.forEach((e) => container.insertBefore(e, container.firstChild))
+	const sorted = entries
+		.filter(([_, dl]) => dl)
+		.sort(([_c1, dl1], [_c2, dl2]) => (dl1! > dl2! ? 1 : -1))
+
+	for (const [c] of sorted) {
+		container.insertBefore(c as HTMLElement, container.firstChild)
+	}
 }
 
 export async function sort(observer: MutationObserver, container: HTMLElement) {
 	observer.disconnect()
 
-	sortByDefinitionLength(await _sort(container), container)
+	const entries = await _sort(container)
+	sortByDefinitionLength(entries, container)
 
 	observer.observe(container, {
 		attributes: false,

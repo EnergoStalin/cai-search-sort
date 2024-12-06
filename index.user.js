@@ -3,7 +3,7 @@
 // @author        EnergoStalin
 // @description   Sort search so cards with public definition stays on top and marked with a star
 // @license       AGPL-3.0-only
-// @version       1.1.0
+// @version       1.1.1
 // @namespace     https://c.ai
 // @match         https://character.ai/*
 // @run-at        document-body
@@ -130,14 +130,14 @@ function isStarred(card) {
   return Boolean(card.querySelector('div[data-status="starred"]'));
 }
 __name(isStarred, "isStarred");
-function setStarredStatus(card, description) {
+function setStarredStatus(card, descriptionLength) {
   statusWrapper(card, "starred").innerHTML = `
 		<div class="flex grow-0 shrink-0 justify-center">
 			${starredIcon}
 		</div>
 		<div class="flex flex-row gap-1 tooltip-text">
 			<span class="tooltip-even">Description</span>
-			<span class="tooltip-even tooltip-number">${description.length}</span>
+			<span class="tooltip-even tooltip-number">${descriptionLength}</span>
 		</div>
 	`;
 }
@@ -159,14 +159,13 @@ async function _sort(container) {
     setPendingStatus(card);
     const info = await getCharacterInfo(card.href.split("/").pop());
     clearStatus(card);
-    if (info.copyable) {
-      setStarredStatus(card, info.description);
+    if (info.description?.length > 0) {
+      setStarredStatus(card, info.description.length);
     } else {
       container.append(card);
     }
     return [
       card,
-      info.definition?.length,
       info.description?.length
     ];
   });
@@ -174,12 +173,16 @@ async function _sort(container) {
 }
 __name(_sort, "_sort");
 function sortByDefinitionLength(entries, container) {
-  entries.filter(([_c, dl, _dl]) => (dl ?? 0) !== 0).sort(([_c1, dl1, _dl1], [_c2, dl2, _dl2]) => dl1 < dl2 ? 1 : -1).map(([c, _dfl, _dsl]) => c).reverse().forEach((e) => container.insertBefore(e, container.firstChild));
+  const sorted = entries.filter(([_, dl]) => dl).sort(([_c1, dl1], [_c2, dl2]) => dl1 > dl2 ? 1 : -1);
+  for (const [c] of sorted) {
+    container.insertBefore(c, container.firstChild);
+  }
 }
 __name(sortByDefinitionLength, "sortByDefinitionLength");
 async function sort(observer, container) {
   observer.disconnect();
-  sortByDefinitionLength(await _sort(container), container);
+  const entries = await _sort(container);
+  sortByDefinitionLength(entries, container);
   observer.observe(container, {
     attributes: false,
     childList: true,

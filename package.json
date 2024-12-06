@@ -1,6 +1,6 @@
 {
   "name": "cai-search-sort",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Sort search so cards with public definition stays on top and marked with a star",
   "homepage": "https://c.ai",
   "module": "esm",
@@ -9,7 +9,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "ENVIRONMENT=development tsup --watch",
+    "dev": "tsup --watch",
     "build": "tsup && cp -f build/index.user.js .",
     "serve": "http-server build -a 127.0.0.1 -d false -i false -c-1 -o index.proxy.user.js",
     "lint": "eslint src/**/*.ts src/*.ts",

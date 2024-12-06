@@ -25,7 +25,7 @@ export default defineConfig({
 	target: "esnext",
 	bundle: true,
 	outDir: "build",
-	minify: dev,
+	minify: false,
 	clean: false,
 	banner: {
 		js: "(async () => {",
