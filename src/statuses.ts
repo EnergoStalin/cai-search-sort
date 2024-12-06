@@ -20,29 +20,14 @@ export function statusWrapper(card: HTMLElement, status: string) {
 export function isStarred(card: HTMLElement) {
 	return Boolean(card.querySelector('div[data-status="starred"]'))
 }
-export function setStarredStatus(
-	card: HTMLElement,
-	description: string,
-	definition: string,
-) {
+export function setStarredStatus(card: HTMLElement, description: string) {
 	statusWrapper(card, "starred").innerHTML = `
 		<div class="flex grow-0 shrink-0 justify-center">
 			${starredIcon}
 		</div>
-		<div class="flex flex-col tooltip-text">
-			<span class="tooltip-head">Lengths</span>
-			<div class="flex flex-row gap-1">
-				<span class="tooltip-even">Description</span>
-				<span class="tooltip-even tooltip-number">${description.length}</span>
-			</div>
-			<div class="flex flex-row gap-1">
-				<span class="tooltip-even">Definition</span>
-				<span class="tooltip-even tooltip-number">${definition.length}</span>
-			</div>
-			<div class="flex flex-row gap-1">
-				<span class="tooltip-even">Total</span>
-				<span class="tooltip-even tooltip-number">${definition.length + description.length}</span>
-			</div>
+		<div class="flex flex-row gap-1 tooltip-text">
+			<span class="tooltip-even">Description</span>
+			<span class="tooltip-even tooltip-number">${description.length}</span>
 		</div>
 	`
 }

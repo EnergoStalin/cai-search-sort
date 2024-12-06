@@ -3,7 +3,7 @@
 // @author        EnergoStalin
 // @description   Sort search so cards with public definition stays on top and marked with a star
 // @license       AGPL-3.0-only
-// @version       1.0.5
+// @version       1.1.0
 // @namespace     https://c.ai
 // @match         https://character.ai/*
 // @run-at        document-body
@@ -106,9 +106,6 @@ GM.addStyle(`
 .align-items-start {
   align-items: flex-start;
 }
-.text-center {
-  text-align: center;
-}
 `);
 
 // src/icons.ts
@@ -133,25 +130,14 @@ function isStarred(card) {
   return Boolean(card.querySelector('div[data-status="starred"]'));
 }
 __name(isStarred, "isStarred");
-function setStarredStatus(card, description, definition) {
+function setStarredStatus(card, description) {
   statusWrapper(card, "starred").innerHTML = `
 		<div class="flex grow-0 shrink-0 justify-center">
 			${starredIcon}
 		</div>
-		<div class="flex flex-col tooltip-text">
-			<span class="tooltip-head">Lengths</span>
-			<div class="flex flex-row gap-1">
-				<span class="tooltip-even">Description</span>
-				<span class="tooltip-even tooltip-number">${description.length}</span>
-			</div>
-			<div class="flex flex-row gap-1">
-				<span class="tooltip-even">Definition</span>
-				<span class="tooltip-even tooltip-number">${definition.length}</span>
-			</div>
-			<div class="flex flex-row gap-1">
-				<span class="tooltip-even">Total</span>
-				<span class="tooltip-even tooltip-number">${definition.length + description.length}</span>
-			</div>
+		<div class="flex flex-row gap-1 tooltip-text">
+			<span class="tooltip-even">Description</span>
+			<span class="tooltip-even tooltip-number">${description.length}</span>
 		</div>
 	`;
 }
@@ -173,8 +159,8 @@ async function _sort(container) {
     setPendingStatus(card);
     const info = await getCharacterInfo(card.href.split("/").pop());
     clearStatus(card);
-    if (info.definition) {
-      setStarredStatus(card, info.description, info.definition);
+    if (info.copyable) {
+      setStarredStatus(card, info.description);
     } else {
       container.append(card);
     }

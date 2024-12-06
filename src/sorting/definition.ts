@@ -18,8 +18,8 @@ async function _sort(container: HTMLElement) {
 		)
 		clearStatus(card)
 
-		if (info.definition) {
-			setStarredStatus(card, info.description, info.definition)
+		if (info.copyable) {
+			setStarredStatus(card, info.description)
 		} else {
 			container.append(card)
 		}
